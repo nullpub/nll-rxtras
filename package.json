@@ -13,7 +13,8 @@
     "_package": "rm -rf ./package && ./node_modules/.bin/ngc -p tsconfig.ngc.json",
     "_copy": "cp ./package.dist.json ./package/package.json && cp ./README.md ./package",
     "_rollup": "./node_modules/.bin/rollup -c rollup.es5.js && ./node_modules/.bin/rollup -c rollup.umd.js",
-    "dist": "npm run _package && npm run _copy && npm run _rollup"
+    "dist": "npm run _package && npm run _copy && npm run _rollup",
+    "npm-push": "npm publish ./package"
   },
   "private": true,
   "peerDependencies": {
