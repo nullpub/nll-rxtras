@@ -1,2 +1,2 @@
 
-import { fromEvents } from './fromEvents';
+export { fromEvents } from './fromEvents';
