@@ -6,84 +6,42 @@
 
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { EventEmitter } from 'events';
-import { ok } from 'assert';
 
-export interface MetaListener {
-  type: 'next' | 'error' | 'complete';
-  event: any;
-  listener: (...args: any[]) => void;
+/**
+ * EventMap interface for the fromEvents Observable.
+ */
+export interface EventMap<T, U = T> {
+  nexts: (string | symbol)[];
+  errors?: (string | symbol)[];
+  completes?: (string | symbol)[];
+  projector?: (...events: T[]) => U;
 }
 
-export interface EventMap {
-  nexts: any[];
-  errors?: any[];
-  completes?: any[];
-  projector?: (...args: any[]) => any;
+/**
+ * Server-side IEventEmitter interface for the fromEvents Observable.
+ */
+export interface IEventEmitter {
+  on (event: string | symbol, listener: () => void): any;
+  removeListener (event: string | symbol, listener: () => void): any;
 }
 
-// Standard Event Maps
-export const ReadableStreamMap: EventMap = {
-  nexts: ['data'],
-  errors: ['error'],
-  completes: ['end', 'close']
-};
+/**
+ * Class for fromEvents Observable.
+ */
+export function fromEvents <T, U = T> (
+    { nexts, errors, completes, projector }: EventMap<T, U>,
+    emitter: IEventEmitter,
+): Observable<U> {
 
-export const ServerMap: EventMap = {
-  nexts: ['request'],
-  errors: ['error'],
-  completes: ['close'],
-  projector: (request, response) => ({request, response})
-};
+  projector = projector || ((...args: T[]): U => args.find(a => a !== undefined) as any);
 
-export const RequestMap: EventMap = {
-  nexts: ['response'],
-  errors: ['error'],
-  completes: ['abort', 'aborted', 'close', 'end']
-};
-
-export const ResponseMap: EventMap = {
-  nexts: ['data'],
-  errors: ['error'],
-  completes: ['abort', 'aborted', 'close', 'end']
-};
-
-export const ButtonMap: EventMap = { nexts: ['click'] };
-export const InputMap: EventMap = { nexts: ['focus', 'blur', 'keyup', 'change'] };
-
-const defaultEventMap: EventMap = { nexts: [], errors: [], completes: [], projector: (...args) => args }
-
-export function fromEvents<T>(
-    { nexts, errors, completes, projector }: EventMap = defaultEventMap,
-    emitter: EventEmitter
-): Observable<T> {
-
-  ok(nexts.length >= 0, 'Must have at least one event to listen for.');
-  const proj = typeof projector === 'function' ? projector : (...args: T[]) => args[0];
-
-  return Observable.create((observer: Observer<T>) => {
-
-    const listeners: MetaListener[] = [];
-
-    const next = (...event: any[]) => observer.next(proj(...event));
-    const error = (event: any) => observer.error(event);
-    const complete = () => observer.complete();
-
-    nexts.forEach(n => {
-      emitter.on(n, next);
-      listeners.push({type: 'next', event: n, listener: next});
-    });
-
-    errors.forEach(e => {
-      emitter.on(e, error); // Could use .once but we already unsubscribe on error/complete
-      listeners.push({type: 'error', event: e, listener: error});
-    });
-
-    completes.forEach(c => {
-      emitter.on(c, complete);
-      listeners.push({type: 'complete', event: c, listener: complete});
-    });
-
-    return () => listeners.forEach(l => emitter.removeListener(l.event, l.listener));
-  });
+  return Observable.create(o => [
+      ...nexts.map(event => ({ event, listener: (...e: T[]) => o.next(projector(...e)) })),
+      ...(errors || []).map(event => ({ event, listener: e => o.error(e) })),
+      ...(completes || []).map(event => ({ event, listener: () => o.complete() })),
+    ].reduce((f, { event, listener }) => {
+      emitter.on(event, listener);
+      return () => emitter.removeListener(event, listener) && f();
+    }, new Function())
+  );
 }

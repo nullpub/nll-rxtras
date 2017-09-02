@@ -5,18 +5,23 @@
  */
 
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
 import { merge } from 'rxjs/observable/merge';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 
-export function without<T>(source: Observable<T>, discriminant: Observable<T> | Observable<T>[]): Observable<T> {
-  const disc = discriminant instanceof Array ? merge(...discriminant).share() : discriminant;
-  return Observable.create((observer: Observer<T>) => source
-    .withLatestFrom(disc)
+/**
+ * Class for without operator.
+ */
+export function without <T> (
+  source: Observable<T>,
+  ...discriminant: Observable<T>[],
+): Observable<T> {
+
+  return Observable.create(o => source
+    .withLatestFrom(Array.isArray(discriminant) ? merge(...discriminant).share() : discriminant)
     .filter(([a, b]) => a !== b)
-    .map(([a, b]) => a)
-    .subscribe(observer));
+    .map(([a]) => a)
+    .subscribe(o));
 }

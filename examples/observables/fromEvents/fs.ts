@@ -1,12 +1,11 @@
-/// <reference path="../node_modules/@types/node/index.d.ts" />
-'use strict';
 
-import { fromEvents, ReadableStreamMap } from '../src/';
+import { fromEvents } from '../../../src/rxtras/observables/fromEvents';
+import { ReadableStreamMap } from '../../../src/rxtras/utils/fromEventsServerMaps';
 import { createReadStream } from 'fs';
 import 'rxjs/add/operator/reduce';
 
 const stream = createReadStream('./example.ts', {encoding: 'utf-8'});
-const obs = fromEvents<string>(ReadableStreamMap, stream);
+const obs = fromEvents(ReadableStreamMap, stream);
 
 obs
   .reduce((acc: string, curr: string) => acc += curr)
