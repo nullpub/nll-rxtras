@@ -7,32 +7,32 @@ import { EventMap, IEventEmitter } from '../observables/fromEvents';
 
 
 // Standard Event Maps
-export const ReadableStreamMap: EventMap<Readable> = {
-    nexts: ['data'],
-    errors: ['error'],
-    completes: ['end', 'close']
-};
+export const ReadableStreamMap: EventMap<Readable> = new EventMap(
+    ['data'],
+    ['error'],
+    ['end', 'close'],
+);
 
-export const ServerMap: EventMap<Server> = {
-  nexts: ['request'],
-  errors: ['error'],
-  completes: ['close'],
-};
+export const ServerMap: EventMap<Server> = new EventMap(
+  ['request'],
+  ['error'],
+  ['close'],
+);
 
-export const SocketMap: EventMap<Socket> = {
-  nexts: ['request'],
-  errors: ['error'],
-  completes: ['close'],
-};
+export const SocketMap: EventMap<Socket> = new EventMap(
+  ['request'],
+  ['error'],
+  ['close'],
+);
 
-export const RequestMap: EventMap<ClientRequest> = {
-    nexts: ['response'],
-    errors: ['error'],
-    completes: ['abort', 'aborted', 'close', 'end']
-};
+export const RequestMap: EventMap<ClientRequest> = new EventMap(
+    ['response'],
+    ['error'],
+    ['abort', 'aborted', 'close', 'end']
+);
 
-export const ResponseMap: EventMap<ServerResponse> = {
-    nexts: ['data'],
-    errors: ['error'],
-    completes: ['abort', 'aborted', 'close', 'end']
-};
+export const ResponseMap: EventMap<ServerResponse> = new EventMap(
+    ['data'],
+    ['error'],
+    ['abort', 'aborted', 'close', 'end']
+);

@@ -10,11 +10,13 @@ import { Observer } from 'rxjs/Observer';
 /**
  * EventMap interface for the fromEvents Observable.
  */
-export interface EventMap<T, U = T> {
-  nexts: (string | symbol)[];
-  errors?: (string | symbol)[];
-  completes?: (string | symbol)[];
-  projector?: (...events: T[]) => U;
+export class EventMap<T, U = T> {
+  constructor (
+    public nexts: (string | symbol)[],
+    public errors: (string | symbol)[] = [],
+    public completes: (string | symbol)[] = [],
+    public projector: (...events: T[]) => U = (...args: T[]): U => args.find(a => a !== undefined) as any,
+  ) {}
 }
 
 /**
@@ -35,9 +37,9 @@ export function fromEvents <T, U = T> (
 
   projector = projector || ((...args: T[]): U => args.find(a => a !== undefined) as any);
 
-  return Observable.create(o => [
+  return Observable.create((o: Observer<U>) => [
       ...nexts.map(event => ({ event, listener: (...e: T[]) => o.next(projector(...e)) })),
-      ...(errors || []).map(event => ({ event, listener: e => o.error(e) })),
+      ...(errors || []).map(event => ({ event, listener: (e: T) => o.error(e) })),
       ...(completes || []).map(event => ({ event, listener: () => o.complete() })),
     ].reduce((f, { event, listener }) => {
       emitter.on(event, listener);

@@ -5,6 +5,7 @@
  */
 
 import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 import { merge } from 'rxjs/observable/merge';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/filter';
@@ -19,7 +20,7 @@ export function without <T> (
   ...discriminant: Observable<T>[],
 ): Observable<T> {
 
-  return Observable.create(o => source
+  return Observable.create((o: Observer<T>) => source
     .withLatestFrom(Array.isArray(discriminant) ? merge(...discriminant).share() : discriminant)
     .filter(([a, b]) => a !== b)
     .map(([a]) => a)

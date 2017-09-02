@@ -13,38 +13,44 @@ export class ElementEventEmitter implements IEventEmitter {
 }
 
 
-export const WindowResizeMap: EventMap<UIEvent> = {
-    nexts: ['resize'],
-    completes: ['unload'],
-};
+export const WindowResizeMap: EventMap<UIEvent> = new EventMap(
+    ['resize'],
+    [],
+    ['unload'],
+);
 
-export const MouseWheelMap: EventMap<MouseWheelEvent> = {
-    nexts: ['wheel'],
-};
+export const MouseWheelMap: EventMap<MouseWheelEvent> = new EventMap(
+    ['wheel'],
+);
 
-export const FormMap: EventMap<UIEvent> = {
-    nexts: ['submit'],
-    completes: ['unload'],
-};
+export const FormMap: EventMap<UIEvent> = new EventMap(
+    ['submit'],
+    [],
+    ['unload'],
+);
 
-export const ButtonMap: EventMap<UIEvent> = {
-    nexts: ['click', 'dblclick'],
-    completes: ['unload'],
-};
+export const ButtonMap: EventMap<UIEvent> = new EventMap(
+    ['click', 'dblclick'],
+    [],
+    ['unload'],
+);
 
-export const InputMap: EventMap<UIEvent> = {
-    nexts: ['focus', 'blur', 'keyup', 'change', 'input'],
-    completes: ['unload'],
-};
+export const InputMap: EventMap<UIEvent> = new EventMap(
+    ['focus', 'blur', 'keyup', 'change', 'input'],
+    [],
+    ['unload'],
+);
 
-export const SelectMap: EventMap<UIEvent> = {
-    nexts: ['change'],
-    completes: ['unload'],
-};
+export const SelectMap: EventMap<UIEvent> = new EventMap(
+    ['change'],
+    [],
+    ['unload'],
+);
 
-export const HoverMap: EventMap<UIEvent> = {
-    nexts: ['mouseenter', 'mouseleave', 'mouseout', 'mouseover'],
-    completes: ['unload'],
-};
+export const HoverMap: EventMap<UIEvent> = new EventMap(
+    ['mouseenter', 'mouseleave', 'mouseout', 'mouseover'],
+    [],
+    ['unload'],
+);
 
 
