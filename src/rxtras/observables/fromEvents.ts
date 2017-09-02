@@ -35,8 +35,6 @@ export function fromEvents <T, U = T> (
     emitter: IEventEmitter,
 ): Observable<U> {
 
-  projector = projector || ((...args: T[]): U => args.find(a => a !== undefined) as any);
-
   return Observable.create((o: Observer<U>) => [
       ...nexts.map(event => ({ event, listener: (...e: T[]) => o.next(projector(...e)) })),
       ...errors.map(event => ({ event, listener: (e: T) => o.error(e) })),
