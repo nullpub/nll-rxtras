@@ -21,7 +21,7 @@ export function without <T> (
 ): Observable<T> {
 
   return Observable.create((o: Observer<T>) => source
-    .withLatestFrom(discriminant.length ? merge(...discriminant).share() : discriminant)
+    .withLatestFrom(discriminant.length > 1 ? merge(...discriminant).share() : discriminant[0])
     .filter(([a, b]) => a !== b)
     .map(([a]) => a)
     .subscribe(o));
