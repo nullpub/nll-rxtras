@@ -4,11 +4,11 @@ import { ReadableStreamMap } from '../../../src/rxtras/utils/fromEventsServerMap
 import { createReadStream } from 'fs';
 import 'rxjs/add/operator/reduce';
 
-const stream = createReadStream('./example.ts', {encoding: 'utf-8'});
+const stream = createReadStream('./https.ts', {encoding: 'utf-8'});
 const obs = fromEvents(ReadableStreamMap, stream);
 
 obs
-  .reduce((acc: string, curr: string) => acc += curr)
+  .reduce((acc: string, curr) => acc += curr, '')
   .subscribe(
     n => console.log(n),
     e => console.error('Uh oh!', e),

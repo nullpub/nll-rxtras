@@ -10,17 +10,17 @@ import { Observer } from 'rxjs/Observer';
 /**
  * EventMap interface for the fromEvents Observable.
  */
-export class EventMap<T, U = T> {
+export class EventMap <T, U = T> {
   constructor (
     public nexts: (string | symbol)[],
     public errors: (string | symbol)[] = [],
     public completes: (string | symbol)[] = [],
-    public projector: (...events: T[]) => U = (...args: T[]): U => args.find(a => a !== undefined) as any,
+    public projector: (...events: T[]) => U = (...args) => args.find(a => a !== undefined) as any,
   ) {}
 }
 
 /**
- * Server-side IEventEmitter interface for the fromEvents Observable.
+ * IEventEmitter interface for the fromEvents Observable, biased towards server-side events.
  */
 export interface IEventEmitter {
   on (event: string | symbol, listener: () => void): any;

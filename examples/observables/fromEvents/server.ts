@@ -13,13 +13,12 @@ interface Ctx {
 }
 
 const server = createServer();
-const obs = fromEvents<ClientRequest>(ServerMap, server);
-const parser = (req: IncomingMessage) => fromEvents<ServerResponse>(ResponseMap, req)
-  .reduce((body, data) => body += data, '');
+const obs = fromEvents(ServerMap, server);
+const parser = (req: IncomingMessage) => fromEvents(ResponseMap, req).reduce((body, data) => body += data, '');
 const sub = {
   next: (ctx: Ctx) => console.log('Got a request', ctx.request.method),
   error: (e: Error) => console.error('Uh oh!', e),
-  complete: () => console.log('Server is closed')
+  complete: () => console.log('Server is closed'),
 };
 
 const post = obs.filter(ctx => ctx.request.method === 'POST')

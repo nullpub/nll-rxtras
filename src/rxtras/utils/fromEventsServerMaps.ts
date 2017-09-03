@@ -1,5 +1,5 @@
 
-import { ClientRequest, ServerResponse} from 'https';
+import { createServer, IncomingMessage, ServerResponse, ClientRequest } from 'http';
 import { Socket, Server } from 'net';
 import { Readable } from 'stream';
 
@@ -13,19 +13,19 @@ export const ReadableStreamMap: EventMap<Readable> = new EventMap(
     ['end', 'close'],
 );
 
-export const ServerMap: EventMap<Server> = new EventMap(
-  ['request'],
-  ['error'],
-  ['close'],
+export const ServerMap: EventMap<Server, { request: IncomingMessage, response: ServerResponse }> = new EventMap(
+    ['request'],
+    ['error'],
+    ['close'],
 );
 
 export const SocketMap: EventMap<Socket> = new EventMap(
-  ['request'],
-  ['error'],
-  ['close'],
+    ['request'],
+    ['error'],
+    ['close'],
 );
 
-export const RequestMap: EventMap<ClientRequest> = new EventMap(
+export const RequestMap: EventMap<ClientRequest, { request: IncomingMessage, response: ServerResponse }> = new EventMap(
     ['response'],
     ['error'],
     ['abort', 'aborted', 'close', 'end']
